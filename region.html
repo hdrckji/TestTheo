@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Région — France</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #e8eff7;
+      background-image:
+        linear-gradient(rgba(0,35,149,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,35,149,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      color: #1a1a2e;
+      min-height: 100vh;
+    }
+    .hero {
+      color: white;
+      padding: 48px 24px 40px;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+    }
+    .hero-inner { max-width: 1000px; margin: 0 auto; }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: white;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      opacity: 0.9;
+      margin-bottom: 20px;
+      background: rgba(255,255,255,0.18);
+      padding: 8px 16px;
+      border-radius: 30px;
+      transition: background 0.2s;
+    }
+    .back-link:hover { background: rgba(255,255,255,0.32); }
+    .hero h1 { font-size: 2.6rem; font-weight: 800; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+    .hero .icon { font-size: 3rem; }
+    .hero .subtitle { margin-top: 8px; font-size: 1.1rem; opacity: 0.92; }
+    .badge {
+      display: inline-block;
+      margin-top: 14px;
+      background: rgba(255,255,255,0.25);
+      padding: 5px 16px;
+      border-radius: 30px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .container { max-width: 1000px; margin: -24px auto 40px; padding: 0 24px; position: relative; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    .stat-card .value { font-size: 1.5rem; font-weight: 800; color: #002395; }
+    .stat-card .label { font-size: 0.76rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 22px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+    }
+    .card h2 {
+      font-size: 1.2rem;
+      color: #002395;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card p { line-height: 1.75; color: #333; font-size: 0.98rem; }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+    .chip {
+      background: #eef3fb;
+      color: #002395;
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+    .chip.point { background: #fdecea; color: #c0392b; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+    @media (max-width: 700px) {
+      .two-col { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 2rem; }
+    }
+    footer { text-align: center; padding: 28px; color: #aaa; font-size: 0.82rem; border-top: 1px solid #dde4ef; }
+    .not-found { text-align: center; padding: 80px 24px; }
+    .not-found a { color: #002395; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div id="content"></div>
+  <footer>Données indicatives • Découpage territorial français depuis 2016</footer>
+
+  <script src="data.js"></script>
+  <script>
+    function getParam(name) {
+      return new URLSearchParams(window.location.search).get(name);
+    }
+
+    function darken(hex, amount) {
+      const n = parseInt(hex.slice(1), 16);
+      let r = (n >> 16) - amount, g = ((n >> 8) & 0xff) - amount, b = (n & 0xff) - amount;
+      r = Math.max(0, r); g = Math.max(0, g); b = Math.max(0, b);
+      return `rgb(${r},${g},${b})`;
+    }
+
+    const id = getParam("region");
+    const r = REGIONS[id];
+    const content = document.getElementById("content");
+
+    if (!r) {
+      content.innerHTML = `<div class="not-found">
+        <h1>Région introuvable 😕</h1>
+        <p style="margin-top:12px;"><a href="index.html">← Retour à l'accueil</a></p>
+      </div>`;
+    } else {
+      document.title = r.name + " — Régions de France";
+      const typeLabel = r.type === "metro" ? "Région métropolitaine" : "Région d'outre-mer";
+      content.innerHTML = `
+        <div class="hero" style="background:linear-gradient(135deg, ${darken(r.color,60)}, ${r.color});">
+          <div class="hero-inner">
+            <a class="back-link" href="index.html">← Retour à la carte</a>
+            <div class="icon">${r.icon}</div>
+            <h1>${r.name}</h1>
+            <div class="subtitle">Chef-lieu : <strong>${r.chef}</strong></div>
+            <div class="badge">${typeLabel}</div>
+          </div>
+        </div>
+
+        <div class="container">
+          <div class="stats-grid">
+            <div class="stat-card"><div class="value">${r.population}</div><div class="label">Habitants</div></div>
+            <div class="stat-card"><div class="value">${r.superficie}</div><div class="label">Superficie</div></div>
+            <div class="stat-card"><div class="value">${r.departements}</div><div class="label">Départements</div></div>
+            <div class="stat-card"><div class="value">${r.densite}</div><div class="label">Densité</div></div>
+          </div>
+
+          <div class="card">
+            <h2>📖 Histoire</h2>
+            <p>${r.histoire}</p>
+          </div>
+
+          <div class="two-col">
+            <div class="card">
+              <h2>🗺️ Géographie</h2>
+              <p>${r.geo}</p>
+            </div>
+            <div class="card">
+              <h2>💼 Économie</h2>
+              <p>${r.economie}</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>🏙️ Principales villes</h2>
+            <div class="chips">
+              ${r.villes.map(v => `<span class="chip">${v}</span>`).join("")}
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>⭐ Sites incontournables</h2>
+            <div class="chips">
+              ${r.points.map(p => `<span class="chip point">${p}</span>`).join("")}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

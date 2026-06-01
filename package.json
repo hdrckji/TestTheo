@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "description": "Site des régions de France classées par ordre alphabétique",
   "scripts": {
-    "start": "npx serve . -p $PORT"
+    "start": "node server.js"
   }
 }

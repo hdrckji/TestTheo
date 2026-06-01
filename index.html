@@ -1,216 +1,185 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Régions de France</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f0f4f8;
+      background-color: #e8eff7;
+      background-image:
+        linear-gradient(rgba(0,35,149,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,35,149,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
       color: #1a1a2e;
+      min-height: 100vh;
     }
 
     header {
-      background: linear-gradient(135deg, #002395, #ED2939);
+      background: linear-gradient(135deg, #001f6b 0%, #002395 50%, #1a3aad 100%);
       color: white;
       text-align: center;
-      padding: 48px 24px 36px;
+      padding: 36px 24px 28px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
-
     header h1 {
-      font-size: 2.6rem;
+      font-size: 2.4rem;
       font-weight: 800;
       letter-spacing: 1px;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+      position: relative;
     }
+    header p { margin-top: 8px; font-size: 1rem; opacity: 0.85; position: relative; }
 
-    header p {
-      margin-top: 10px;
-      font-size: 1.1rem;
-      opacity: 0.9;
-    }
-
-    .flag {
-      font-size: 3rem;
-      margin-bottom: 12px;
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: 40px auto;
-      padding: 0 24px;
-    }
-
-    .tabs {
+    .map-section {
+      background: white;
+      max-width: 1200px;
+      margin: 36px auto 0;
+      padding: 32px 24px;
+      border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(0,35,149,0.1);
       display: flex;
-      gap: 12px;
-      margin-bottom: 32px;
+      gap: 36px;
+      align-items: flex-start;
       flex-wrap: wrap;
     }
+    .map-section h2 {
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #002395;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .map-wrapper { flex: 1; min-width: 280px; }
+    .france-svg {
+      width: 100%;
+      max-width: 500px;
+      display: block;
+      margin: 0 auto;
+      filter: drop-shadow(0 6px 18px rgba(0,35,149,0.18));
+    }
+    .region-path {
+      stroke: white;
+      stroke-width: 1.5;
+      cursor: pointer;
+      transition: opacity 0.2s, filter 0.2s;
+    }
+    .region-path:hover { opacity: 0.8; filter: brightness(1.12); }
+    .region-label {
+      font-size: 6.5px;
+      fill: white;
+      font-weight: 700;
+      text-anchor: middle;
+      pointer-events: none;
+    }
+    .map-legend { flex: 1; min-width: 220px; }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 6px;
+      border-bottom: 1px solid #f0f4f8;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+    .legend-item:hover { background: #f0f4f8; }
+    .legend-dot { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
+    .legend-name { font-size: 0.82rem; font-weight: 600; color: #1a1a2e; }
+    .legend-chef { font-size: 0.72rem; color: #888; }
+    .overseas-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+    .overseas-card {
+      background: linear-gradient(135deg, #ED2939, #c0392b);
+      color: white;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-align: center;
+      flex: 1;
+      min-width: 80px;
+    }
+    .overseas-card span { display: block; font-size: 0.66rem; font-weight: 400; opacity: 0.85; margin-top: 2px; }
 
+    .container { max-width: 1200px; margin: 32px auto; padding: 0 24px; }
+    .stats-bar {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      background: white;
+      border-radius: 14px;
+      padding: 18px 28px;
+      margin-bottom: 28px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    }
+    .stat-number { font-size: 1.8rem; font-weight: 800; color: #002395; }
+    .stat-label { font-size: 0.78rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+
+    .tabs { display: flex; gap: 10px; margin-bottom: 28px; flex-wrap: wrap; }
     .tab-btn {
-      padding: 10px 22px;
+      padding: 9px 20px;
       border: 2px solid #002395;
       background: white;
       color: #002395;
       border-radius: 30px;
       cursor: pointer;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 600;
       transition: all 0.2s;
     }
+    .tab-btn:hover, .tab-btn.active { background: #002395; color: white; }
 
-    .tab-btn:hover,
-    .tab-btn.active {
-      background: #002395;
-      color: white;
-    }
-
-    .section-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #555;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      margin-bottom: 16px;
-      padding-bottom: 8px;
-      border-bottom: 2px solid #ddd;
-    }
-
-    .letter-group {
-      margin-bottom: 36px;
-    }
-
+    .letter-group { margin-bottom: 32px; }
     .letter-heading {
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       background: linear-gradient(135deg, #002395, #ED2939);
       color: white;
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       font-weight: 800;
-      width: 48px;
-      height: 48px;
-      line-height: 48px;
-      text-align: center;
-      border-radius: 12px;
-      margin-bottom: 14px;
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      margin-bottom: 12px;
       box-shadow: 0 4px 12px rgba(0,35,149,0.25);
     }
-
     .regions-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 14px;
     }
-
     .region-card {
       background: white;
-      border-radius: 14px;
-      padding: 20px 22px;
+      border-radius: 12px;
+      padding: 18px 20px;
       display: flex;
       align-items: center;
-      gap: 16px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      gap: 14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
       border-left: 5px solid #002395;
       transition: transform 0.2s, box-shadow 0.2s;
-      cursor: default;
     }
+    .region-card:hover { transform: translateY(-3px); box-shadow: 0 8px 22px rgba(0,35,149,0.14); }
+    .region-card.outre-mer { border-left-color: #ED2939; }
+    .region-icon { font-size: 1.8rem; flex-shrink: 0; }
+    .region-info h3 { font-size: 0.95rem; font-weight: 700; }
+    .region-info span { font-size: 0.78rem; color: #888; display: block; margin-top: 2px; }
+    .badge { font-size: 0.68rem; font-weight: 700; padding: 2px 7px; border-radius: 20px; margin-top: 4px; display: inline-block; }
+    .badge.metro { background: #e8eeff; color: #002395; }
+    .badge.dom { background: #fdecea; color: #c0392b; }
 
-    .region-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(0,35,149,0.15);
-    }
+    footer { text-align: center; padding: 28px; color: #aaa; font-size: 0.82rem; margin-top: 32px; border-top: 1px solid #dde4ef; }
 
-    .region-card.outre-mer {
-      border-left-color: #ED2939;
-    }
-
-    .region-icon {
-      font-size: 2rem;
-      flex-shrink: 0;
-    }
-
-    .region-info h3 {
-      font-size: 1rem;
-      font-weight: 700;
-      color: #1a1a2e;
-    }
-
-    .region-info span {
-      font-size: 0.82rem;
-      color: #888;
-      display: block;
-      margin-top: 3px;
-    }
-
-    .badge {
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 20px;
-      margin-top: 5px;
-      display: inline-block;
-    }
-
-    .badge.metro {
-      background: #e8eeff;
-      color: #002395;
-    }
-
-    .badge.dom {
-      background: #fdecea;
-      color: #c0392b;
-    }
-
-    .stats-bar {
-      display: flex;
-      gap: 24px;
-      flex-wrap: wrap;
-      background: white;
-      border-radius: 14px;
-      padding: 20px 28px;
-      margin-bottom: 36px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-    }
-
-    .stat {
-      text-align: center;
-    }
-
-    .stat-number {
-      font-size: 2rem;
-      font-weight: 800;
-      color: #002395;
-    }
-
-    .stat-label {
-      font-size: 0.82rem;
-      color: #888;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    footer {
-      text-align: center;
-      padding: 30px;
-      color: #aaa;
-      font-size: 0.85rem;
-      margin-top: 40px;
-      border-top: 1px solid #e0e0e0;
-    }
-
-    @media (max-width: 600px) {
-      header h1 { font-size: 1.8rem; }
+    @media (max-width: 640px) {
+      header h1 { font-size: 1.7rem; }
+      .map-section { flex-direction: column; }
       .regions-grid { grid-template-columns: 1fr; }
     }
   </style>
@@ -218,36 +187,131 @@
 <body>
 
 <header>
-  <div class="flag">🇫🇷</div>
-  <h1>Régions de France</h1>
+  <h1>🗺️ Régions de France</h1>
   <p>18 régions classées par ordre alphabétique</p>
 </header>
 
+<div class="map-section">
+  <div class="map-wrapper">
+    <h2>Carte des régions métropolitaines</h2>
+    <svg class="france-svg" viewBox="0 0 500 560" xmlns="http://www.w3.org/2000/svg">
+      <rect width="500" height="560" fill="#a8d0e8" rx="12"/>
+      <defs>
+        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="0.5"/>
+        </pattern>
+      </defs>
+      <rect width="500" height="560" fill="url(#grid)" rx="12"/>
+
+      <polygon class="region-path" data-region="Hauts-de-France"
+        points="240,44 272,36 356,88 348,116 308,136 272,148 244,142 214,126 214,102"
+        fill="#1a4fd6"/>
+      <text class="region-label" x="278" y="98">Hauts-de-France</text>
+
+      <polygon class="region-path" data-region="Île-de-France"
+        points="272,148 308,136 328,152 322,182 296,190 268,180"
+        fill="#2563eb"/>
+      <text class="region-label" x="297" y="164" font-size="5.5">Île-de-France</text>
+
+      <polygon class="region-path" data-region="Grand Est"
+        points="348,116 356,88 406,122 462,156 456,242 424,260 396,242 362,194 328,152 308,136"
+        fill="#1e40af"/>
+      <text class="region-label" x="395" y="186">Grand Est</text>
+
+      <polygon class="region-path" data-region="Normandie"
+        points="108,118 188,122 214,102 214,126 244,142 238,164 216,174 188,172 162,172 138,168 112,156"
+        fill="#1d4ed8"/>
+      <text class="region-label" x="178" y="148">Normandie</text>
+
+      <polygon class="region-path" data-region="Bretagne"
+        points="14,208 22,188 74,154 108,118 112,156 138,168 132,190 114,210 88,232 54,236 28,228"
+        fill="#3b82f6"/>
+      <text class="region-label" x="76" y="196">Bretagne</text>
+
+      <polygon class="region-path" data-region="Pays de la Loire"
+        points="88,232 114,210 132,190 138,168 162,172 188,172 216,174 228,200 214,240 194,258 160,272 126,262 96,254"
+        fill="#2570e0"/>
+      <text class="region-label" x="160" y="224">Pays de la Loire</text>
+
+      <polygon class="region-path" data-region="Centre-Val de Loire"
+        points="238,164 244,142 272,148 268,180 296,190 314,206 310,232 284,258 258,260 238,248 228,238 214,240 228,200 216,174"
+        fill="#1e56c4"/>
+      <text class="region-label" x="265" y="214">Centre-Val de Loire</text>
+
+      <polygon class="region-path" data-region="Bourgogne-Franche-Comté"
+        points="296,190 322,182 328,152 362,194 396,242 424,260 414,286 382,300 348,284 320,262 310,232 314,206"
+        fill="#1e3a8a"/>
+      <text class="region-label" x="362" y="240">Bourgogne-FC</text>
+
+      <polygon class="region-path" data-region="Nouvelle-Aquitaine"
+        points="96,254 126,262 160,272 194,258 214,240 228,238 238,248 236,280 220,318 196,354 164,386 130,394 96,382 76,350 82,304 88,266"
+        fill="#c0392b"/>
+      <text class="region-label" x="158" y="325">Nouvelle-Aquitaine</text>
+
+      <polygon class="region-path" data-region="Auvergne-Rhône-Alpes"
+        points="238,248 258,260 284,258 310,232 320,262 348,284 382,300 378,358 352,376 318,390 286,370 258,344 236,312 220,318 236,280"
+        fill="#1e40af"/>
+      <text class="region-label" x="305" y="326">Auvergne-RA</text>
+
+      <polygon class="region-path" data-region="Occitanie"
+        points="196,354 220,318 236,312 258,344 286,370 318,390 336,416 308,448 268,460 228,456 192,446 162,420 164,386"
+        fill="#e74c3c"/>
+      <text class="region-label" x="248" y="416">Occitanie</text>
+
+      <polygon class="region-path" data-region="Provence-Alpes-Côte d'Azur"
+        points="352,376 378,358 382,300 414,286 434,310 448,344 448,374 420,406 400,420 370,426 336,416 318,390"
+        fill="#d63031"/>
+      <text class="region-label" x="390" y="385" font-size="5.5">Prov.-Alpes-CA</text>
+
+      <polygon class="region-path" data-region="Corse"
+        points="430,432 442,416 456,420 462,442 458,466 448,476 438,468 433,450"
+        fill="#e84393"/>
+      <text class="region-label" x="446" y="448">Corse</text>
+      <text x="446" y="408" font-size="6" fill="#555" text-anchor="middle" font-style="italic">île</text>
+
+      <g transform="translate(32,36)" opacity="0.65">
+        <text font-size="10" fill="white" text-anchor="middle" x="0" y="-8">N</text>
+        <line x1="0" y1="-6" x2="0" y2="6" stroke="white" stroke-width="1.5"/>
+        <line x1="-6" y1="0" x2="6" y2="0" stroke="white" stroke-width="1.5"/>
+        <circle cx="0" cy="0" r="8" fill="none" stroke="white" stroke-width="1"/>
+        <polygon points="0,-6 -2,0 2,0" fill="white"/>
+      </g>
+
+      <g transform="translate(20,530)" opacity="0.7">
+        <line x1="0" y1="0" x2="50" y2="0" stroke="white" stroke-width="2"/>
+        <line x1="0" y1="-3" x2="0" y2="3" stroke="white" stroke-width="1.5"/>
+        <line x1="50" y1="-3" x2="50" y2="3" stroke="white" stroke-width="1.5"/>
+        <text x="25" y="-6" font-size="7" fill="white" text-anchor="middle">≈ 300 km</text>
+      </g>
+    </svg>
+  </div>
+
+  <div class="map-legend">
+    <h2>Régions métropolitaines</h2>
+    <div id="legend-list"></div>
+    <h2 style="margin-top:24px;">Territoires d'outre-mer</h2>
+    <div class="overseas-grid">
+      <div class="overseas-card">🌺 Guadeloupe<span>Basse-Terre</span></div>
+      <div class="overseas-card">🎶 Martinique<span>Fort-de-France</span></div>
+      <div class="overseas-card">🌿 Guyane<span>Cayenne</span></div>
+      <div class="overseas-card">🌋 La Réunion<span>Saint-Denis</span></div>
+      <div class="overseas-card">🐢 Mayotte<span>Mamoudzou</span></div>
+    </div>
+  </div>
+</div>
+
 <div class="container">
-
   <div class="stats-bar">
-    <div class="stat">
-      <div class="stat-number">18</div>
-      <div class="stat-label">Régions au total</div>
-    </div>
-    <div class="stat">
-      <div class="stat-number">13</div>
-      <div class="stat-label">Métropolitaines</div>
-    </div>
-    <div class="stat">
-      <div class="stat-number">5</div>
-      <div class="stat-label">Outre-mer</div>
-    </div>
+    <div class="stat"><div class="stat-number">18</div><div class="stat-label">Régions au total</div></div>
+    <div class="stat"><div class="stat-number">13</div><div class="stat-label">Métropolitaines</div></div>
+    <div class="stat"><div class="stat-number">5</div><div class="stat-label">Outre-mer</div></div>
   </div>
-
   <div class="tabs">
-    <button class="tab-btn active" onclick="filterRegions('all', this)">Toutes les régions</button>
-    <button class="tab-btn" onclick="filterRegions('metro', this)">Métropole</button>
-    <button class="tab-btn" onclick="filterRegions('dom', this)">Outre-mer</button>
+    <button class="tab-btn active" onclick="filterRegions('all',this)">Toutes les régions</button>
+    <button class="tab-btn" onclick="filterRegions('metro',this)">Métropole</button>
+    <button class="tab-btn" onclick="filterRegions('dom',this)">Outre-mer</button>
   </div>
-
   <div id="regions-list"></div>
-
 </div>
 
 <footer>
@@ -256,76 +320,95 @@
 
 <script>
   const regions = [
-    { name: "Auvergne-Rhône-Alpes",      type: "metro", icon: "⛰️",  chef: "Lyon" },
-    { name: "Bourgogne-Franche-Comté",    type: "metro", icon: "🍷",  chef: "Dijon" },
-    { name: "Bretagne",                   type: "metro", icon: "⚓",  chef: "Rennes" },
-    { name: "Centre-Val de Loire",        type: "metro", icon: "🏰",  chef: "Orléans" },
-    { name: "Corse",                      type: "metro", icon: "🏝️",  chef: "Ajaccio" },
-    { name: "Grand Est",                  type: "metro", icon: "🌲",  chef: "Strasbourg" },
-    { name: "Guadeloupe",                 type: "dom",   icon: "🌺",  chef: "Basse-Terre" },
-    { name: "Guyane",                     type: "dom",   icon: "🌿",  chef: "Cayenne" },
-    { name: "Hauts-de-France",            type: "metro", icon: "🏭",  chef: "Lille" },
-    { name: "Île-de-France",              type: "metro", icon: "🗼",  chef: "Paris" },
-    { name: "La Réunion",                 type: "dom",   icon: "🌋",  chef: "Saint-Denis" },
-    { name: "Martinique",                 type: "dom",   icon: "🎶",  chef: "Fort-de-France" },
-    { name: "Mayotte",                    type: "dom",   icon: "🐢",  chef: "Mamoudzou" },
-    { name: "Normandie",                  type: "metro", icon: "🎠",  chef: "Rouen" },
-    { name: "Nouvelle-Aquitaine",         type: "metro", icon: "🏄",  chef: "Bordeaux" },
-    { name: "Occitanie",                  type: "metro", icon: "☀️",  chef: "Toulouse" },
-    { name: "Pays de la Loire",           type: "metro", icon: "🚢",  chef: "Nantes" },
-    { name: "Provence-Alpes-Côte d'Azur", type: "metro", icon: "🌊",  chef: "Marseille" },
+    { name: "Auvergne-Rhône-Alpes",      type: "metro", icon: "⛰️",  chef: "Lyon",          color: "#1e40af" },
+    { name: "Bourgogne-Franche-Comté",    type: "metro", icon: "🍷",  chef: "Dijon",         color: "#1e3a8a" },
+    { name: "Bretagne",                   type: "metro", icon: "⚓",  chef: "Rennes",        color: "#3b82f6" },
+    { name: "Centre-Val de Loire",        type: "metro", icon: "🏰",  chef: "Orléans",       color: "#1e56c4" },
+    { name: "Corse",                      type: "metro", icon: "🏝️",  chef: "Ajaccio",       color: "#e84393" },
+    { name: "Grand Est",                  type: "metro", icon: "🌲",  chef: "Strasbourg",    color: "#1e40af" },
+    { name: "Guadeloupe",                 type: "dom",   icon: "🌺",  chef: "Basse-Terre",   color: "#ED2939" },
+    { name: "Guyane",                     type: "dom",   icon: "🌿",  chef: "Cayenne",       color: "#ED2939" },
+    { name: "Hauts-de-France",            type: "metro", icon: "🏭",  chef: "Lille",         color: "#1a4fd6" },
+    { name: "Île-de-France",              type: "metro", icon: "🗼",  chef: "Paris",         color: "#2563eb" },
+    { name: "La Réunion",                 type: "dom",   icon: "🌋",  chef: "Saint-Denis",   color: "#ED2939" },
+    { name: "Martinique",                 type: "dom",   icon: "🎶",  chef: "Fort-de-France",color: "#ED2939" },
+    { name: "Mayotte",                    type: "dom",   icon: "🐢",  chef: "Mamoudzou",     color: "#ED2939" },
+    { name: "Normandie",                  type: "metro", icon: "🎠",  chef: "Rouen",         color: "#1d4ed8" },
+    { name: "Nouvelle-Aquitaine",         type: "metro", icon: "🏄",  chef: "Bordeaux",      color: "#c0392b" },
+    { name: "Occitanie",                  type: "metro", icon: "☀️",  chef: "Toulouse",      color: "#e74c3c" },
+    { name: "Pays de la Loire",           type: "metro", icon: "🚢",  chef: "Nantes",        color: "#2570e0" },
+    { name: "Provence-Alpes-Côte d'Azur", type: "metro", icon: "🌊",  chef: "Marseille",     color: "#d63031" },
   ];
+
+  const metroRegions = regions.filter(r => r.type === "metro");
+
+  const legendList = document.getElementById("legend-list");
+  metroRegions.forEach(r => {
+    const item = document.createElement("div");
+    item.className = "legend-item";
+    item.innerHTML = `<div class="legend-dot" style="background:${r.color}"></div>
+      <div><div class="legend-name">${r.name}</div><div class="legend-chef">${r.chef}</div></div>`;
+    item.addEventListener("mouseenter", () => highlightRegion(r.name));
+    item.addEventListener("mouseleave", resetHighlight);
+    legendList.appendChild(item);
+  });
+
+  document.querySelectorAll(".region-path").forEach(path => {
+    path.addEventListener("mouseenter", () => highlightRegion(path.dataset.region));
+    path.addEventListener("mouseleave", resetHighlight);
+  });
+
+  function highlightRegion(name) {
+    document.querySelectorAll(".region-path").forEach(p => {
+      p.style.opacity = p.dataset.region === name ? "1" : "0.4";
+    });
+  }
+  function resetHighlight() {
+    document.querySelectorAll(".region-path").forEach(p => p.style.opacity = "1");
+  }
 
   function normalize(str) {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase()[0];
   }
 
   function filterRegions(type, btn) {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    const filtered = type === 'all' ? regions : regions.filter(r => r.type === type);
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    const filtered = type === "all" ? regions : regions.filter(r => r.type === type);
     renderRegions(filtered);
   }
 
   function renderRegions(list) {
-    const container = document.getElementById('regions-list');
-    container.innerHTML = '';
-
+    const container = document.getElementById("regions-list");
+    container.innerHTML = "";
     const groups = {};
     list.forEach(r => {
       const letter = normalize(r.name);
       if (!groups[letter]) groups[letter] = [];
       groups[letter].push(r);
     });
-
     Object.keys(groups).sort().forEach(letter => {
-      const group = document.createElement('div');
-      group.className = 'letter-group';
-
-      const heading = document.createElement('div');
-      heading.className = 'letter-heading';
+      const group = document.createElement("div");
+      group.className = "letter-group";
+      const heading = document.createElement("div");
+      heading.className = "letter-heading";
       heading.textContent = letter;
       group.appendChild(heading);
-
-      const grid = document.createElement('div');
-      grid.className = 'regions-grid';
-
+      const grid = document.createElement("div");
+      grid.className = "regions-grid";
       groups[letter].forEach(r => {
-        const card = document.createElement('div');
-        card.className = 'region-card' + (r.type === 'dom' ? ' outre-mer' : '');
-
+        const card = document.createElement("div");
+        card.className = "region-card" + (r.type === "dom" ? " outre-mer" : "");
+        card.style.borderLeftColor = r.color;
         card.innerHTML = `
           <div class="region-icon">${r.icon}</div>
           <div class="region-info">
             <h3>${r.name}</h3>
             <span>Chef-lieu : ${r.chef}</span>
-            <span class="badge ${r.type}">${r.type === 'metro' ? 'Métropole' : 'Outre-mer'}</span>
-          </div>
-        `;
+            <span class="badge ${r.type}">${r.type === "metro" ? "Métropole" : "Outre-mer"}</span>
+          </div>`;
         grid.appendChild(card);
       });
-
       group.appendChild(grid);
       container.appendChild(group);
     });
@@ -333,6 +416,5 @@
 
   renderRegions(regions);
 </script>
-
 </body>
 </html>

@@ -28,8 +28,24 @@ const server = http.createServer((req, res) => {
     return res.end("Forbidden");
   }
 
+  serveFile(filePath, res);
+});
+
+function serveFile(filePath, res) {
   fs.readFile(filePath, (err, data) => {
     if (err) {
+      // Si le fichier n'existe pas et n'a pas d'extension, on tente d'ajouter .html
+      // (ex: /region -> /region.html). Gère les redirections "clean URLs" en cache.
+      if (!path.extname(filePath)) {
+        return fs.readFile(filePath + ".html", (err2, data2) => {
+          if (err2) {
+            res.writeHead(404, { "Content-Type": "text/html; charset=utf-8" });
+            return res.end("<h1>404 - Page introuvable</h1>");
+          }
+          res.writeHead(200, { "Content-Type": MIME[".html"] });
+          res.end(data2);
+        });
+      }
       res.writeHead(404, { "Content-Type": "text/html; charset=utf-8" });
       return res.end("<h1>404 - Page introuvable</h1>");
     }
@@ -37,6 +53,7 @@ const server = http.createServer((req, res) => {
     res.writeHead(200, { "Content-Type": MIME[ext] || "application/octet-stream" });
     res.end(data);
   });
+}
 });
 
 server.listen(PORT, () => {

@@ -248,7 +248,7 @@
 
 <footer>Données indicatives • Découpage territorial français en vigueur depuis 2016</footer>
 
-<script src="data.js"></script>
+<script src="data.js?v=3"></script>
 <script>
   const list = Object.entries(REGIONS).map(([id, r]) => ({ id, ...r }))
     .sort((a, b) => a.name.localeCompare(b.name, "fr"));

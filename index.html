@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Régions de France</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f0f4f8;
+      color: #1a1a2e;
+    }
+
+    header {
+      background: linear-gradient(135deg, #002395, #ED2939);
+      color: white;
+      text-align: center;
+      padding: 48px 24px 36px;
+    }
+
+    header h1 {
+      font-size: 2.6rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    header p {
+      margin-top: 10px;
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    .flag {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 24px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      padding: 10px 22px;
+      border: 2px solid #002395;
+      background: white;
+      color: #002395;
+      border-radius: 30px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover,
+    .tab-btn.active {
+      background: #002395;
+      color: white;
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #ddd;
+    }
+
+    .letter-group {
+      margin-bottom: 36px;
+    }
+
+    .letter-heading {
+      display: inline-block;
+      background: linear-gradient(135deg, #002395, #ED2939);
+      color: white;
+      font-size: 1.6rem;
+      font-weight: 800;
+      width: 48px;
+      height: 48px;
+      line-height: 48px;
+      text-align: center;
+      border-radius: 12px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 12px rgba(0,35,149,0.25);
+    }
+
+    .regions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .region-card {
+      background: white;
+      border-radius: 14px;
+      padding: 20px 22px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      border-left: 5px solid #002395;
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: default;
+    }
+
+    .region-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,35,149,0.15);
+    }
+
+    .region-card.outre-mer {
+      border-left-color: #ED2939;
+    }
+
+    .region-icon {
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+
+    .region-info h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #1a1a2e;
+    }
+
+    .region-info span {
+      font-size: 0.82rem;
+      color: #888;
+      display: block;
+      margin-top: 3px;
+    }
+
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-top: 5px;
+      display: inline-block;
+    }
+
+    .badge.metro {
+      background: #e8eeff;
+      color: #002395;
+    }
+
+    .badge.dom {
+      background: #fdecea;
+      color: #c0392b;
+    }
+
+    .stats-bar {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      background: white;
+      border-radius: 14px;
+      padding: 20px 28px;
+      margin-bottom: 36px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #002395;
+    }
+
+    .stat-label {
+      font-size: 0.82rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: #aaa;
+      font-size: 0.85rem;
+      margin-top: 40px;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.8rem; }
+      .regions-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="flag">🇫🇷</div>
+  <h1>Régions de France</h1>
+  <p>18 régions classées par ordre alphabétique</p>
+</header>
+
+<div class="container">
+
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-number">18</div>
+      <div class="stat-label">Régions au total</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">13</div>
+      <div class="stat-label">Métropolitaines</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">5</div>
+      <div class="stat-label">Outre-mer</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="filterRegions('all', this)">Toutes les régions</button>
+    <button class="tab-btn" onclick="filterRegions('metro', this)">Métropole</button>
+    <button class="tab-btn" onclick="filterRegions('dom', this)">Outre-mer</button>
+  </div>
+
+  <div id="regions-list"></div>
+
+</div>
+
+<footer>
+  Données basées sur le découpage territorial français en vigueur depuis 2016.
+</footer>
+
+<script>
+  const regions = [
+    { name: "Auvergne-Rhône-Alpes",      type: "metro", icon: "⛰️",  chef: "Lyon" },
+    { name: "Bourgogne-Franche-Comté",    type: "metro", icon: "🍷",  chef: "Dijon" },
+    { name: "Bretagne",                   type: "metro", icon: "⚓",  chef: "Rennes" },
+    { name: "Centre-Val de Loire",        type: "metro", icon: "🏰",  chef: "Orléans" },
+    { name: "Corse",                      type: "metro", icon: "🏝️",  chef: "Ajaccio" },
+    { name: "Grand Est",                  type: "metro", icon: "🌲",  chef: "Strasbourg" },
+    { name: "Guadeloupe",                 type: "dom",   icon: "🌺",  chef: "Basse-Terre" },
+    { name: "Guyane",                     type: "dom",   icon: "🌿",  chef: "Cayenne" },
+    { name: "Hauts-de-France",            type: "metro", icon: "🏭",  chef: "Lille" },
+    { name: "Île-de-France",              type: "metro", icon: "🗼",  chef: "Paris" },
+    { name: "La Réunion",                 type: "dom",   icon: "🌋",  chef: "Saint-Denis" },
+    { name: "Martinique",                 type: "dom",   icon: "🎶",  chef: "Fort-de-France" },
+    { name: "Mayotte",                    type: "dom",   icon: "🐢",  chef: "Mamoudzou" },
+    { name: "Normandie",                  type: "metro", icon: "🎠",  chef: "Rouen" },
+    { name: "Nouvelle-Aquitaine",         type: "metro", icon: "🏄",  chef: "Bordeaux" },
+    { name: "Occitanie",                  type: "metro", icon: "☀️",  chef: "Toulouse" },
+    { name: "Pays de la Loire",           type: "metro", icon: "🚢",  chef: "Nantes" },
+    { name: "Provence-Alpes-Côte d'Azur", type: "metro", icon: "🌊",  chef: "Marseille" },
+  ];
+
+  function normalize(str) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase()[0];
+  }
+
+  function filterRegions(type, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const filtered = type === 'all' ? regions : regions.filter(r => r.type === type);
+    renderRegions(filtered);
+  }
+
+  function renderRegions(list) {
+    const container = document.getElementById('regions-list');
+    container.innerHTML = '';
+
+    const groups = {};
+    list.forEach(r => {
+      const letter = normalize(r.name);
+      if (!groups[letter]) groups[letter] = [];
+      groups[letter].push(r);
+    });
+
+    Object.keys(groups).sort().forEach(letter => {
+      const group = document.createElement('div');
+      group.className = 'letter-group';
+
+      const heading = document.createElement('div');
+      heading.className = 'letter-heading';
+      heading.textContent = letter;
+      group.appendChild(heading);
+
+      const grid = document.createElement('div');
+      grid.className = 'regions-grid';
+
+      groups[letter].forEach(r => {
+        const card = document.createElement('div');
+        card.className = 'region-card' + (r.type === 'dom' ? ' outre-mer' : '');
+
+        card.innerHTML = `
+          <div class="region-icon">${r.icon}</div>
+          <div class="region-info">
+            <h3>${r.name}</h3>
+            <span>Chef-lieu : ${r.chef}</span>
+            <span class="badge ${r.type}">${r.type === 'metro' ? 'Métropole' : 'Outre-mer'}</span>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+      group.appendChild(grid);
+      container.appendChild(group);
+    });
+  }
+
+  renderRegions(regions);
+</script>
+
+</body>
+</html>
